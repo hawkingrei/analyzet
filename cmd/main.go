@@ -18,6 +18,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/hawkingrei/analyzet/pkg/util"
 	"github.com/spf13/cobra"
+	_ "go.uber.org/automaxprocs"
 )
 
 var (
