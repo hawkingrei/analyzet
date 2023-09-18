@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"sync"
 	"time"
@@ -61,11 +62,13 @@ func execute(timeoutCtx context.Context, w workload.Workloader, action string, t
 	for i := 0; i < count || count <= 0; i++ {
 		err := w.Run(ctx, index)
 		if err != nil {
-			if !silence {
-				fmt.Printf("[%s] execute %s failed, err %v\n", time.Now().Format("2006-01-02 15:04:05"), action, err)
-			}
-			if !ignoreError {
-				return err
+			if err != sql.ErrNoRows {
+				if !silence {
+					fmt.Printf("[%s] execute %s failed, err %v\n", time.Now().Format("2006-01-02 15:04:05"), action, err)
+				}
+				if !ignoreError {
+					return err
+				}
 			}
 		}
 		select {
