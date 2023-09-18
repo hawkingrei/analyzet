@@ -80,7 +80,7 @@ func execute(timeoutCtx context.Context, w workload.Workloader, action string, t
 
 func executeWorkload(ctx context.Context, w workload.Workloader, threads int) {
 	var wg sync.WaitGroup
-	wg.Add(threads)
+	wg.Add(threads * 2)
 
 	outputCtx, outputCancel := context.WithCancel(ctx)
 	ch := make(chan struct{}, 1)
@@ -139,6 +139,7 @@ func executeWorkload(ctx context.Context, w workload.Workloader, threads int) {
 			}
 		}(i)
 	}
+	time.Sleep(10 * time.Second)
 	for i := 0; i < threads; i++ {
 		go func(index int) {
 			defer wg.Done()
