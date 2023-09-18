@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/pingcap/go-tpc/pkg/sink"
+	"github.com/hawkingrei/analyzet/pkg/sink"
 )
 
 const (

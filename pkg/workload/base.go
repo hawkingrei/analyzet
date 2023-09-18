@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/pingcap/go-tpc/pkg/util"
+	"github.com/hawkingrei/analyzet/pkg/util"
 )
 
 // TpcState saves state for each thread
