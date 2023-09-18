@@ -133,7 +133,7 @@ func executeWorkload(ctx context.Context, w workload.Workloader, threads int) {
 	for i := 0; i < threads; i++ {
 		go func(index int) {
 			defer wg.Done()
-			if err := execute(ctx, w, "ready", threads, index); err != nil {
+			if err := execute(ctx, w, "prepare", threads, index); err != nil {
 				panic(fmt.Sprintf("a fatal occurred when preparing data: %v", err))
 				return
 			}
