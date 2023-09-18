@@ -78,7 +78,7 @@ func execute(timeoutCtx context.Context, w workload.Workloader, action string, t
 	return nil
 }
 
-func executeWorkload(ctx context.Context, w workload.Workloader, threads int, action string) {
+func executeWorkload(ctx context.Context, w workload.Workloader, threads int) {
 	var wg sync.WaitGroup
 	wg.Add(threads)
 
@@ -98,7 +98,7 @@ func executeWorkload(ctx context.Context, w workload.Workloader, threads int, ac
 			}
 		}
 	}()
-	if w.Name() == "tpch" && action == "run" {
+	if w.Name() == "tpch" {
 		err := w.Exec(`create or replace view revenue0 (supplier_no, total_revenue) as
 	select
 		l_suppkey,
@@ -133,22 +133,24 @@ func executeWorkload(ctx context.Context, w workload.Workloader, threads int, ac
 	for i := 0; i < threads; i++ {
 		go func(index int) {
 			defer wg.Done()
-			if err := execute(ctx, w, action, threads, index); err != nil {
-				if action == "prepare" {
-					panic(fmt.Sprintf("a fatal occurred when preparing data: %v", err))
-				}
-				fmt.Printf("execute %s failed, err %v\n", action, err)
+			if err := execute(ctx, w, "ready", threads, index); err != nil {
+				panic(fmt.Sprintf("a fatal occurred when preparing data: %v", err))
+				return
+			}
+		}(i)
+	}
+	for i := 0; i < threads; i++ {
+		go func(index int) {
+			defer wg.Done()
+			if err := execute(ctx, w, "run", threads, index); err != nil {
+				fmt.Printf("execute %s failed, err %v\n", "run", err)
 				return
 			}
 		}(i)
 	}
 
 	wg.Wait()
-
-	if action == "prepare" {
-		// For prepare, we must check the data consistency after all prepare finished
-		checkPrepare(ctx, w)
-	}
+	checkPrepare(ctx, w)
 	outputCancel()
 
 	<-ch

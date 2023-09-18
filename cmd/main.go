@@ -196,7 +196,6 @@ func main() {
 	cobra.EnablePrefixMatching = true
 
 	registerTpcc(rootCmd)
-
 	var cancel context.CancelFunc
 	globalCtx, cancel = context.WithCancel(context.Background())
 
