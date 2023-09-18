@@ -9,6 +9,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.16.0
 	github.com/spf13/cobra v1.0.0
+	go.uber.org/automaxprocs v1.5.3
 )
 
 require (
